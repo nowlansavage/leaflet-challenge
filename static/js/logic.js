@@ -1,7 +1,7 @@
 // create map
 var myMap = L.map("map", {
   center: [37.09, -95.71],
-  zoom: 5,
+  zoom: 4,
 });
 //Create title layer
 var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
@@ -18,13 +18,13 @@ var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_da
 
 //Assign color based on the depth of the earthquake
 function makeColor(d){
-    return d > 90 ? '#800026' :
-         d > 70  ? '#BD0026' :
-         d > 50  ? '#E31A1C' :
-         d > 30  ? '#FC4E2A' :
-         d > 10   ? '#FD8D3C' :
-         d > -10   ? '#FEB24C' :
-                    '#FFEDA0';
+    return d > 50 ? '#800026' :
+         d > 40  ? '#EA2C2C' :
+         d > 30  ? '#EA822C' :
+         d > 20  ? '#EE9C00' :
+         d > 10   ? '#EECC00' :
+         d > -10   ? '#D4EE00' :
+                    '#98EE00';
 }
 
 //create markers and change marker size and color absed on data
@@ -59,9 +59,16 @@ d3.json(queryUrl, function(data){
 
 //Legend 
 
-// var legend = L.control({ position: "bottomright" });
-// legend.onAdd = function() {
-//   var div = L.DomUtil.create('div', 'info legend'),
-//   levels = [-10, 10, 30, 50, 70, 90];
-
-// }
+var legend = L.control({ position: "bottomright" });
+legend.onAdd = function() {
+  var div = L.DomUtil.create('div', 'info legend'),
+  levels = [-10, 10, 20, 30, 40, 50];
+  //loop through levels and create  legend 
+  for (var i = 0; i < levels.length; i++) {
+    div.innerHTML +=
+      "<li style=\"background-color: " + makeColor(levels[i]) + "\"></li>" +
+      " " + levels[i] + (levels[i + 1] ? '&ndash;' + levels[i + 1] + '<ul>' : '+')
+  }
+return div
+}
+legend.addTo(myMap);
